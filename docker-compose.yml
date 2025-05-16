@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-container-payroll-backend
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: payroll
+    ports:
+      - "3307:3306"
+    networks:
+      - payroll_network
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    image: mexxardev/payroll-application-be-mexxardev
+    container_name: payroll-backend-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/payroll
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8080:8080"
+    networks:
+      - payroll_network
+    depends_on:
+      - mysql
+
+networks:
+  payroll_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
